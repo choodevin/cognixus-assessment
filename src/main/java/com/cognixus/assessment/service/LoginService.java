@@ -128,4 +128,14 @@ public class LoginService {
         String value = jsonNode.toString();
         return value.substring(1, value.length() - 1);
     }
+
+    public UUID getUserId(String token) throws Exception {
+        Optional<User> userOptional = userRepository.findByToken(token);
+
+        if (userOptional.isPresent()) {
+            return userOptional.get().getId();
+        } else {
+            throw new Exception("User not found or token expired");
+        }
+    }
 }

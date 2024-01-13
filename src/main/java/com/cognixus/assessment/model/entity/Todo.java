@@ -23,4 +23,7 @@ public class Todo {
 
     @Column(name = "isdone")
     private boolean isDone;
+
+    @Column(name = "user_id")
+    private UUID userId;
 }
