@@ -15,3 +15,9 @@ spring:
 
 config:
   login-expire: 10 # minute
+
+google:
+  auth:
+    client-id: 283383699868-kud40qv9qa6qiu474tj6jgpacs472gpg.apps.googleusercontent.com
+    client-secret: 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
+    redirect-url: http://localhost:1234/login/redirect

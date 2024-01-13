@@ -14,20 +14,17 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "users")
-public class Users {
+public class User {
     @Id
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "token")
-    private String token;
-
     @Column(name = "token_expire")
     private LocalDateTime tokenExpire;
 
-    @Column(name = "password")
-    private String password;
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "user_id")
+    private UUID user_id;
 }
