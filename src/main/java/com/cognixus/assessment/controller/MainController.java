@@ -15,7 +15,7 @@ public class MainController {
     private MainService mainService;
 
     @GetMapping(value = ResourcePath.GET_TODO_LIST_BY_ID)
-    public ResponseEntity<String> getTodoListById(@PathVariable("id") String id, @RequestHeader String token) {
+    public ResponseEntity<String> getTodoListById(@PathVariable("id") String id) {
         return mainService.getTodoListById(UUID.fromString(id));
     }
 }

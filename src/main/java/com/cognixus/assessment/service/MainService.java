@@ -18,6 +18,6 @@ public class MainService {
     public ResponseEntity<String> getTodoListById(UUID id) {
         Optional<Todo> todoOptional = todoRepository.findById(id);
 
-        return todoOptional.map(value -> new ResponseEntity<>(value.getDscp(), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>("No Record Found", HttpStatus.OK));
+        return todoOptional.map(value -> new ResponseEntity<>(value.getDscp(), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>("No Record(s) Found", HttpStatus.OK));
     }
 }

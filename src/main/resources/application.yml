@@ -7,14 +7,18 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres?currentSchema=assessment
     username: postgres
-    password: postgres
+    password: admin
     driver-class-name: org.postgresql.Driver
 
   flyway:
     schemas: assessment
 
+logging:
+  level:
+    root: INFO
+
 config:
-  login-expire: 10 # minute
+  login-expire: 100 # minute
 
 google:
   auth:
