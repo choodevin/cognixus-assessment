@@ -1,6 +1,5 @@
 package com.cognixus.assessment.interceptor;
 
-import com.cognixus.assessment.repository.UserRepository;
 import com.cognixus.assessment.service.LoginService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
