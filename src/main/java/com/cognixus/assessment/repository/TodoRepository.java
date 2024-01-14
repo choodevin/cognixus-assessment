@@ -9,9 +9,8 @@ import java.util.UUID;
 
 @Repository
 public interface TodoRepository extends JpaRepository<Todo, UUID> {
-    Optional<Todo> findByDscp(String dscp);
 
-    Optional<Todo> findByDscpAndUserId(String title, UUID userid);
+    Optional<Todo> findByTitleAndUserId(String title, UUID userid);
 
     Optional<Todo> findByUserId(UUID userId);
 }

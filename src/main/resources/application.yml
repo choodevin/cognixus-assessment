@@ -7,7 +7,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres?currentSchema=assessment
     username: postgres
-    password: admin
+    password: postgres
     driver-class-name: org.postgresql.Driver
 
   flyway:

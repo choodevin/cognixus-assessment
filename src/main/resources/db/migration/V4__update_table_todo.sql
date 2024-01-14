@@ -1,0 +1,8 @@
+ALTER TABLE todo
+RENAME COLUMN dscp TO title;
+
+ALTER TABLE todo
+DROP COLUMN isdone;
+
+ALTER TABLE todo
+ADD COLUMN status VARCHAR(50);

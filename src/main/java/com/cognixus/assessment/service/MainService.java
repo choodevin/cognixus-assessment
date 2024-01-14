@@ -1,6 +1,7 @@
 package com.cognixus.assessment.service;
 
 import com.cognixus.assessment.enums.Action;
+import com.cognixus.assessment.enums.Status;
 import com.cognixus.assessment.model.entity.Todo;
 import com.cognixus.assessment.repository.TodoRepository;
 import lombok.AllArgsConstructor;
@@ -25,7 +26,7 @@ public class MainService {
             UUID userId = loginService.getUserId(token);
             Optional<Todo> todoOptional = todoRepository.findByUserId(userId);
 
-            return todoOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+            return todoOptional.map(ResponseEntity::ok).orElseThrow(() -> new Exception("No Record(s) found!"));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
         }
@@ -34,7 +35,7 @@ public class MainService {
     public ResponseEntity<String> addTodoList(String title, String token) {
         try {
             UUID userId = loginService.getUserId(token);
-            Optional<Todo> todoOptional = todoRepository.findByDscpAndUserId(title, userId);
+            Optional<Todo> todoOptional = todoRepository.findByTitleAndUserId(title, userId);
 
             if (todoOptional.isPresent()) {
                 throw new Exception("Duplicate title found.");
@@ -42,8 +43,8 @@ public class MainService {
 
             Todo todo = new Todo();
             todo.setId(UUID.randomUUID());
-            todo.setDone(false);
-            todo.setDscp(title);
+            todo.setStatus(Status.NOT_DONE);
+            todo.setTitle(title);
             todo.setUserId(userId);
 
             todoRepository.saveAndFlush(todo);
@@ -57,13 +58,13 @@ public class MainService {
     public ResponseEntity<String> todoListAction(String title, Action action, String token) {
         try {
             UUID userId = loginService.getUserId(token);
-            Optional<Todo> todoOptional = todoRepository.findByDscpAndUserId(title, userId);
+            Optional<Todo> todoOptional = todoRepository.findByTitleAndUserId(title, userId);
 
             if (todoOptional.isPresent()) {
                 Todo todo = todoOptional.get();
 
                 if (action.equals(Action.DONE) || action.equals(Action.UNDONE)) {
-                    todo.setDone(action.equals(Action.DONE));
+                    todo.setStatus(action.equals(Action.DONE) ? Status.DONE : Status.NOT_DONE);
                     todoRepository.saveAndFlush(todo);
                 } else if (action.equals(Action.DELETE)) {
                     todoRepository.delete(todo);

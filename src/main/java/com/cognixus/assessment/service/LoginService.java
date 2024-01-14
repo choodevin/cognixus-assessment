@@ -30,77 +30,34 @@ public class LoginService {
     private String clientSecret;
     @Value("${config.login-expire}")
     private int loginExpire;
-    private String authUrl = "https://oauth2.googleapis.com/token?code=";
 
     public String getLoginUrl() {
-        // get login url for user to login thru google
+        // get login url for user to login thru google, after success auth with Google, will auto redirect to login redirect
         return "\nPlease access the below URL to continue google login: \n\nhttps://accounts.google.com/o/oauth2/auth?client_id=" + clientId +
                 "&redirect_uri=" + redirectUrl + "&response_type=code&scope=openid%20profile%20email\n";
     }
 
-    public ResponseEntity<String> processLogin(String code) throws Exception {
-        String accessToken = "";
-
+    public ResponseEntity<String> processLogin(String code) {
         try {
-            RestTemplate restTemplate = new RestTemplate();
-            HttpHeaders authHeader = new HttpHeaders();
-            authHeader.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            String accessToken = getAccessTokenFromGoogle(code);
+            String email = getUserEmailFromGoogle(accessToken);
 
-            authUrl = constructAuthUrl(code);
+            Optional<User> userOptional = userRepository.findByEmail(email);
+            User user = userOptional.orElseGet(() -> createUser(email));
 
-            HttpEntity<String> httpEntity = new HttpEntity<>(authHeader);
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            user.setToken(accessToken);
+            user.setTokenExpire(currentDateTime.plusMinutes(loginExpire));
 
-            // get access token from google
-            ResponseEntity<String> authResponse = restTemplate.postForEntity(authUrl, httpEntity, String.class);
+            userRepository.saveAndFlush(user);
 
-            if (authResponse.getStatusCode().equals(HttpStatus.OK)) {
-                log.info("Response from GOOGLE for AUTH -- OK");
-                ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode authNode = objectMapper.readTree(authResponse.getBody());
-
-                accessToken = extractJsonNode(authNode.get("access_token"));
-
-                HttpHeaders userInfoHeader = new HttpHeaders();
-                userInfoHeader.set("Authorization", "Bearer " + accessToken);
-                userInfoHeader.setContentType(MediaType.APPLICATION_JSON);
-                HttpEntity<String> userInfoEntity = new HttpEntity<>(userInfoHeader);
-
-                // get user info from google
-                String userInfoUrl = "https://www.googleapis.com/oauth2/v1/userinfo";
-                ResponseEntity<String> userInfoResponse = restTemplate.exchange(userInfoUrl, HttpMethod.GET, userInfoEntity, String.class);
-
-                if (userInfoResponse.getStatusCode().equals(HttpStatus.OK)) {
-                    log.info("Response from GOOGLE for USERPROFILE -- OK");
-                    JsonNode userInfoNode = objectMapper.readTree(userInfoResponse.getBody());
-
-                    String email = extractJsonNode(userInfoNode.get("email"));
-                    Optional<User> userOptional = userRepository.findByEmail(email);
-
-                    // process user login using email from google
-                    User user;
-                    if (userOptional.isPresent()) {
-                        user = userOptional.get();
-                    } else {
-                        user = new User();
-                        user.setId(UUID.randomUUID());
-                        user.setEmail(email);
-                    }
-
-                    LocalDateTime currentDateTime = LocalDateTime.now();
-                    user.setToken(accessToken);
-                    user.setTokenExpire(currentDateTime.plusMinutes(loginExpire));
-
-                    userRepository.saveAndFlush(user);
-                }
-            }
+            return ResponseEntity.ok("<p>Your access token is : <br/><b>" + accessToken + "</b></p>" +
+                    "<p>Please proceed to use the token to access the todo list APIs using command : " +
+                    "<br/><b>curl -H \"token: {your_access_token}\" http://localhost:1234/example/api</p></b>" +
+                    "<p>Your token will be expiring in " + loginExpire + " minutes");
         } catch (Exception ex) {
             return ResponseEntity.internalServerError().body("Something went wrong!!");
         }
-
-        return ResponseEntity.ok("<p>Your access token is : <br/><b>" + accessToken + "</b></p>" +
-                "<p>Please proceed to use the token to access the todo list APIs using command : " +
-                "<br/><b>curl -H \"token: {your_access_token}\" http://localhost:1234/example/api</p></b>" +
-                "<p>Your token will be expiring in " + loginExpire + " minutes");
     }
 
     public boolean checkAuthentication(HttpServletRequest request) {
@@ -119,16 +76,6 @@ public class LoginService {
         return false;
     }
 
-    private String constructAuthUrl(String code) {
-        return authUrl + code + "&client_id=" + clientId +
-                "&client_secret=" + clientSecret + "&redirect_uri=" + redirectUrl + "&grant_type=authorization_code";
-    }
-
-    private String extractJsonNode(JsonNode jsonNode) {
-        String value = jsonNode.toString();
-        return value.substring(1, value.length() - 1);
-    }
-
     public UUID getUserId(String token) throws Exception {
         Optional<User> userOptional = userRepository.findByToken(token);
 
@@ -137,5 +84,68 @@ public class LoginService {
         } else {
             throw new Exception("User not found or token expired");
         }
+    }
+
+    private String constructAuthUrl(String code) {
+        return "https://oauth2.googleapis.com/token?code=" + code + "&client_id=" + clientId +
+                "&client_secret=" + clientSecret + "&redirect_uri=" + redirectUrl + "&grant_type=authorization_code";
+    }
+
+    private String extractJsonNode(JsonNode jsonNode) {
+        if (jsonNode != null) {
+            String value = jsonNode.toString();
+            return value.substring(1, value.length() - 1);
+        }
+
+        return "";
+    }
+
+    private String getAccessTokenFromGoogle(String code) throws Exception {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders authHeader = new HttpHeaders();
+        String authUrl = constructAuthUrl(code);
+
+        authHeader.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpEntity<String> httpEntity = new HttpEntity<>(authHeader);
+
+        ResponseEntity<String> authResponse = restTemplate.postForEntity(authUrl, httpEntity, String.class);
+
+        if (!authResponse.getStatusCode().equals(HttpStatus.OK)) {
+            throw new Exception("Failed to obtain access token from Google");
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode authNode = objectMapper.readTree(authResponse.getBody());
+
+        return extractJsonNode(authNode.get("access_token"));
+    }
+
+    private String getUserEmailFromGoogle(String accessToken) throws Exception {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders userInfoHeader = new HttpHeaders();
+        String userInfoUrl = "https://www.googleapis.com/oauth2/v1/userinfo";
+
+        userInfoHeader.set("Authorization", "Bearer " + accessToken);
+        userInfoHeader.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> httpEntity = new HttpEntity<>(userInfoHeader);
+
+        ResponseEntity<String> userInfoResponse = restTemplate.exchange(userInfoUrl, HttpMethod.GET, httpEntity, String.class);
+
+        if (!userInfoResponse.getStatusCode().equals(HttpStatus.OK)) {
+            throw new Exception("Failed to obtain user info from Google");
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode authNode = objectMapper.readTree(userInfoResponse.getBody());
+
+        return extractJsonNode(authNode.get("email"));
+    }
+
+    private User createUser(String email) {
+        User user = new User();
+        user.setId(UUID.randomUUID());
+        user.setEmail(email);
+        return user;
     }
 }

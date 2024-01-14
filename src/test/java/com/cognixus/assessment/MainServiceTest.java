@@ -42,7 +42,7 @@ class MainServiceTest {
     @Test
     public void testAction_Success() throws Exception {
         when(loginService.getUserId(anyString())).thenReturn(UUID.randomUUID());
-        when(todoRepository.findByDscpAndUserId(anyString(), any(UUID.class))).thenReturn(Optional.of(todo));
+        when(todoRepository.findByTitleAndUserId(anyString(), any(UUID.class))).thenReturn(Optional.of(todo));
         assertEquals(ResponseEntity.ok("Todo status has been updated. Use API /get-todo-list to view all todo items."), mainService.todoListAction(title, Action.DONE, token));
         assertEquals(ResponseEntity.ok("Todo status has been updated. Use API /get-todo-list to view all todo items."), mainService.todoListAction(title, Action.UNDONE, token));
         assertEquals(ResponseEntity.ok("Todo item has been deleted. Use API /get-todo-list to view all todo items."), mainService.todoListAction(title, Action.DELETE, token));
@@ -51,7 +51,7 @@ class MainServiceTest {
     @Test
     public void testAction_NotFound() throws Exception {
         when(loginService.getUserId(anyString())).thenReturn(UUID.randomUUID());
-        when(todoRepository.findByDscpAndUserId(anyString(), any(UUID.class))).thenReturn(Optional.empty());
+        when(todoRepository.findByTitleAndUserId(anyString(), any(UUID.class))).thenReturn(Optional.empty());
         assertEquals(ResponseEntity.internalServerError().body("Todo item not found!"), mainService.todoListAction(title, Action.DONE, token));
     }
 
