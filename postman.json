@@ -1,0 +1,152 @@
+{
+	"info": {
+		"_postman_id": "6fe811bc-c53d-4dc5-9d76-7eb76168f7ab",
+		"name": "Main API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12461174"
+	},
+	"item": [
+		{
+			"name": "login",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:1234/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "1234",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "inquiry",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "ya29.a0AfB_byCmPxuYBSlNhKjCY6vU7QwmKCTui3Lladkh1tzNt5yaqAV4kJ-r6irs9BtyxX1vzHQRlleajHPuOH7H4oZvRXfuZhbqE2CsGUqxfeC-lWMk7u_eb0l8UpyTK0M17eu3IfPiElVFIw9Zhz9eyw9_jwCVyWa5Ti-9aCgYKAZ0SARMSFQHGX2MiB51wijcXATigSoKE3-kmjA0171",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:1234/main/get-todo-list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "1234",
+					"path": [
+						"main",
+						"get-todo-list"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"value": "ya29.a0AfB_byCmPxuYBSlNhKjCY6vU7QwmKCTui3Lladkh1tzNt5yaqAV4kJ-r6irs9BtyxX1vzHQRlleajHPuOH7H4oZvRXfuZhbqE2CsGUqxfeC-lWMk7u_eb0l8UpyTK0M17eu3IfPiElVFIw9Zhz9eyw9_jwCVyWa5Ti-9aCgYKAZ0SARMSFQHGX2MiB51wijcXATigSoKE3-kmjA0171",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "Eat",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:1234/main/add",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "1234",
+					"path": [
+						"main",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "set/{action}",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"value": "ya29.a0AfB_byCmPxuYBSlNhKjCY6vU7QwmKCTui3Lladkh1tzNt5yaqAV4kJ-r6irs9BtyxX1vzHQRlleajHPuOH7H4oZvRXfuZhbqE2CsGUqxfeC-lWMk7u_eb0l8UpyTK0M17eu3IfPiElVFIw9Zhz9eyw9_jwCVyWa5Ti-9aCgYKAZ0SARMSFQHGX2MiB51wijcXATigSoKE3-kmjA0171",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "Eat",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:1234/main/set/DONE",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "1234",
+					"path": [
+						"main",
+						"set",
+						"DONE"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
