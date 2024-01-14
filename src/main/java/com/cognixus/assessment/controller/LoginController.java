@@ -2,7 +2,6 @@ package com.cognixus.assessment.controller;
 
 import com.cognixus.assessment.constants.ResourcePath;
 import com.cognixus.assessment.service.LoginService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,12 +18,12 @@ public class LoginController {
     private LoginService loginService;
 
     @GetMapping(value = ResourcePath.TRIGGER_LOGIN)
-    public String triggerLogin() throws LoginException {
+    public String triggerLogin() {
         return loginService.getLoginUrl();
     }
 
     @GetMapping(value = ResourcePath.LOGIN_REDIRECT)
-    public ResponseEntity<String> login(@RequestParam String code) throws Exception {
+    public ResponseEntity<String> loginRedirect(@RequestParam String code) {
         return loginService.processLogin(code);
     }
 }
