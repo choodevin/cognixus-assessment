@@ -1,4 +1,4 @@
-package com.cognixus.assessment.model.entity;
+package com.cognixus.assessment.model;
 
 import com.cognixus.assessment.enums.Status;
 import jakarta.persistence.Column;

@@ -1,7 +1,7 @@
 package com.cognixus.assessment;
 
 import com.cognixus.assessment.enums.Action;
-import com.cognixus.assessment.model.entity.Todo;
+import com.cognixus.assessment.model.Todo;
 import com.cognixus.assessment.repository.TodoRepository;
 import com.cognixus.assessment.service.LoginService;
 import com.cognixus.assessment.service.MainService;

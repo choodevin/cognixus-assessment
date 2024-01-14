@@ -1,4 +1,4 @@
-package com.cognixus.assessment.model.entity;
+package com.cognixus.assessment.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

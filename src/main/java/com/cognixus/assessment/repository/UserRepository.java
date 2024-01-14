@@ -1,6 +1,6 @@
 package com.cognixus.assessment.repository;
 
-import com.cognixus.assessment.model.entity.User;
+import com.cognixus.assessment.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

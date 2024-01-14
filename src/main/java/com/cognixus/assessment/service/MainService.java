@@ -2,7 +2,7 @@ package com.cognixus.assessment.service;
 
 import com.cognixus.assessment.enums.Action;
 import com.cognixus.assessment.enums.Status;
-import com.cognixus.assessment.model.entity.Todo;
+import com.cognixus.assessment.model.Todo;
 import com.cognixus.assessment.repository.TodoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

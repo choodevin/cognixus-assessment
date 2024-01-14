@@ -1,6 +1,6 @@
 package com.cognixus.assessment.repository;
 
-import com.cognixus.assessment.model.entity.Todo;
+import com.cognixus.assessment.model.Todo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

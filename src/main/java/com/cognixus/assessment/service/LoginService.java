@@ -1,11 +1,10 @@
 package com.cognixus.assessment.service;
 
-import com.cognixus.assessment.model.entity.User;
+import com.cognixus.assessment.model.User;
 import com.cognixus.assessment.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
