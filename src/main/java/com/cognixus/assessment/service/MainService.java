@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,9 +25,13 @@ public class MainService {
     public ResponseEntity<?> getAllTodo(String token) {
         try {
             UUID userId = loginService.getUserId(token);
-            Optional<Todo> todoOptional = todoRepository.findByUserId(userId);
+            List<Todo> todoList = todoRepository.findByUserId(userId);
 
-            return todoOptional.map(ResponseEntity::ok).orElseThrow(() -> new Exception("No Record(s) found!"));
+            if (todoList == null || todoList.isEmpty()) {
+                throw new Exception("No Record(s) found!");
+            }
+
+            return ResponseEntity.ok(todoList);
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
         }

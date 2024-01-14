@@ -4,6 +4,7 @@ import com.cognixus.assessment.model.Todo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -12,5 +13,5 @@ public interface TodoRepository extends JpaRepository<Todo, UUID> {
 
     Optional<Todo> findByTitleAndUserId(String title, UUID userid);
 
-    Optional<Todo> findByUserId(UUID userId);
+    List<Todo> findByUserId(UUID userId);
 }
